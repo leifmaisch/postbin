@@ -33,7 +33,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
         <Script
           defer
           src="https://cdn.dumbledor.com/script.js"
-          data-project-key="pk_live_8c341b3198f60095099aaaf6818160e76c7c191329b9f1ee"
+          data-project-key="pk_live_f4922cd920498b217640bf7f192afffadb9855527a77bc89"
         />
       </body>
     </html>
