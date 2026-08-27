@@ -1,0 +1,9 @@
+"use client"
+
+import { Form as FormPrimitive } from "@base-ui/react/form"
+
+function Form({ className, ...props }: FormPrimitive.Props) {
+  return <FormPrimitive data-slot="form" className={className} {...props} />
+}
+
+export { Form, FormPrimitive }

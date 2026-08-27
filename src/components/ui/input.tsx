@@ -1,0 +1,24 @@
+import * as React from "react"
+import { Input as InputPrimitive } from "@base-ui/react/input"
+
+import { squircle } from "@/lib/squircle"
+import { surfaceDepthInput } from "@/lib/surface-depth"
+import { cn } from "@/lib/utils"
+
+function Input({ className, type, style, ...props }: React.ComponentProps<"input">) {
+  return (
+    <InputPrimitive
+      type={type}
+      data-slot="input"
+      style={{ ...squircle, ...style }}
+      className={cn(
+        "box-border h-9 w-full min-w-0 max-w-full rounded-squircle-md border border-input bg-background px-3 py-1 text-base transition-colors duration-150 outline-none file:inline-flex file:h-6 file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground placeholder:text-muted-foreground focus-visible:border-ring focus-visible:ring-2 focus-visible:ring-ring/30 disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50 aria-invalid:border-destructive aria-invalid:ring-destructive/20 md:text-sm",
+        surfaceDepthInput("md"),
+        className
+      )}
+      {...props}
+    />
+  )
+}
+
+export { Input }
