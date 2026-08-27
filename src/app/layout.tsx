@@ -7,6 +7,10 @@ import "./globals.css"
 export const metadata: Metadata = {
   title: "Postbin",
   description: "Inspect HTTP requests in real time",
+  icons: {
+    icon: "/favicon.ico",
+    apple: "/apple-icon.png",
+  },
 }
 
 export const viewport = {
