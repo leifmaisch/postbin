@@ -285,6 +285,7 @@
 @layer base {
   html {
     font-family: var(--font-sans);
+    -webkit-text-size-adjust: 100%;
     @apply font-sans;
   }
   * {

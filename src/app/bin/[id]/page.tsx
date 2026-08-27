@@ -50,16 +50,21 @@ function RequestPanel({ request }: { request: RequestItem }) {
   const queryJson = JSON.stringify(request.query, null, 2)
   const headersJson = JSON.stringify(request.headers, null, 2)
   const titleId = `request-${request.id}-title`
+  const tabsId = `request-${request.id}-tabs`
 
   return (
     <article aria-labelledby={titleId}>
       <Card className="surface-panel">
-        <CardHeader className="flex-row items-center justify-between gap-4 space-y-0">
-          <div className="flex min-w-0 items-center gap-3">
-            <Badge variant={methodColors[request.method] ?? "outline"} aria-hidden="true">
+        <CardHeader className="flex-col items-start gap-3 space-y-0 sm:flex-row sm:items-center sm:justify-between sm:gap-4">
+          <div className="flex min-w-0 w-full items-start gap-3 sm:items-center">
+            <Badge
+              variant={methodColors[request.method] ?? "outline"}
+              className="shrink-0"
+              aria-hidden="true"
+            >
               {request.method}
             </Badge>
-            <CardTitle id={titleId} className="text-heading truncate font-mono">
+            <CardTitle id={titleId} className="text-heading min-w-0 break-all font-mono sm:truncate">
               <span className="sr-only">{request.method} request to </span>
               {request.path}
             </CardTitle>
@@ -70,22 +75,32 @@ function RequestPanel({ request }: { request: RequestItem }) {
         </CardHeader>
         <CardContent className="space-y-4">
           <Tabs defaultValue="body">
-            <TabsList aria-label={`${request.method} ${request.path} details`}>
-              <TabsTrigger value="body">Body</TabsTrigger>
-              <TabsTrigger value="headers">Headers</TabsTrigger>
-              <TabsTrigger value="query">Query</TabsTrigger>
+            <TabsList
+              id={tabsId}
+              className="w-full"
+              aria-label={`${request.method} ${request.path} details`}
+            >
+              <TabsTrigger value="body" className="min-h-9 flex-1">
+                Body
+              </TabsTrigger>
+              <TabsTrigger value="headers" className="min-h-9 flex-1">
+                Headers
+              </TabsTrigger>
+              <TabsTrigger value="query" className="min-h-9 flex-1">
+                Query
+              </TabsTrigger>
             </TabsList>
-            <TabsContent value="body">
+            <TabsContent value="body" className="max-w-full overflow-x-auto">
               {request.body ? (
                 <Code code={request.body} language="json" />
               ) : (
                 <p className="text-description">No body</p>
               )}
             </TabsContent>
-            <TabsContent value="headers">
+            <TabsContent value="headers" className="max-w-full overflow-x-auto">
               <Code code={headersJson} language="json" />
             </TabsContent>
-            <TabsContent value="query">
+            <TabsContent value="query" className="max-w-full overflow-x-auto">
               <Code code={queryJson} language="json" />
             </TabsContent>
           </Tabs>
@@ -169,22 +184,23 @@ export default function BinPage({ params }: PageProps<"/bin/[id]">) {
   async function copyUrl() {
     await navigator.clipboard.writeText(requestUrl)
     setCopied(true)
+    setAnnouncement("Request URL copied to clipboard")
     window.setTimeout(() => setCopied(false), 1500)
   }
 
   return (
     <main
       id="main-content"
-      className="mx-auto flex w-full max-w-4xl flex-1 flex-col gap-8 px-6 py-10"
+      className="mx-auto flex w-full max-w-4xl flex-1 flex-col gap-6 px-4 py-8 sm:gap-8 sm:px-6 sm:py-10"
     >
-      <header className="flex items-start justify-between gap-4">
-        <div>
+      <header className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
+        <div className="min-w-0">
           <nav aria-label="Breadcrumb">
             <Link href="/" className="text-caption hover:text-foreground">
               Postbin
             </Link>
           </nav>
-          <h1 className="text-heading-xl mt-2">Bin {id}</h1>
+          <h1 className="text-heading-xl mt-2 break-all">Bin {id}</h1>
           <div className="mt-3">
             <StatusIndicator
               status="online"
@@ -195,7 +211,8 @@ export default function BinPage({ params }: PageProps<"/bin/[id]">) {
         </div>
         <Badge
           variant="outline"
-          className="tabular-nums"
+          className="w-fit shrink-0 tabular-nums"
+          role="status"
           aria-label={`Refreshing in ${secondsLeft} seconds`}
         >
           <span aria-hidden="true">{secondsLeft}s</span>
@@ -206,16 +223,17 @@ export default function BinPage({ params }: PageProps<"/bin/[id]">) {
         <CardHeader>
           <CardTitle id="request-url-title">Request URL</CardTitle>
         </CardHeader>
-        <CardContent className="flex flex-col gap-3 sm:flex-row sm:items-center">
+        <CardContent className="flex flex-col gap-3 sm:flex-row sm:items-stretch">
           <code
             id="request-url-value"
-            className="bg-muted flex-1 rounded-squircle-md px-4 py-3 font-mono text-sm break-all"
+            className="bg-muted min-w-0 flex-1 rounded-squircle-md px-3 py-3 font-mono text-xs break-all sm:px-4 sm:text-sm"
           >
             {requestUrl}
           </code>
           <Button
             variant="outline"
             onClick={copyUrl}
+            className="min-h-11 w-full shrink-0 sm:w-auto"
             aria-label={copied ? "Copied request URL" : "Copy request URL"}
             aria-describedby="request-url-value"
           >
@@ -228,7 +246,7 @@ export default function BinPage({ params }: PageProps<"/bin/[id]">) {
       <Separator />
 
       <section aria-labelledby="requests-heading" aria-busy={loading}>
-        <div className="mb-4 flex items-center justify-between">
+        <div className="mb-4 flex items-center justify-between gap-3">
           <h2 id="requests-heading" className="text-heading-lg">
             Requests
           </h2>

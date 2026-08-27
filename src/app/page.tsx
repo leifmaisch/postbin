@@ -2,7 +2,7 @@
 
 import { Code2, FormInput, Radio, Webhook } from "lucide-react"
 import { useRouter } from "next/navigation"
-import { useState } from "react"
+import { useId, useState } from "react"
 
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
@@ -41,6 +41,8 @@ export default function HomePage() {
   const router = useRouter()
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
+  const heroId = useId()
+  const errorId = useId()
 
   async function createBin() {
     setLoading(true)
@@ -64,10 +66,15 @@ export default function HomePage() {
   return (
     <main
       id="main-content"
-      className="mx-auto flex w-full max-w-6xl flex-1 flex-col gap-16 px-6 py-16 md:py-24"
+      className="mx-auto flex w-full max-w-6xl flex-1 flex-col gap-12 px-4 py-12 sm:gap-16 sm:px-6 sm:py-16 md:py-24"
     >
-      <section className="mx-auto flex w-full max-w-xl flex-col items-center text-center">
-        <h1 className="text-heading-xl md:text-[2.5rem] md:leading-tight">Postbin</h1>
+      <section
+        aria-labelledby={heroId}
+        className="mx-auto flex w-full max-w-xl flex-col items-center text-center"
+      >
+        <h1 id={heroId} className="text-heading-xl sm:text-[2.5rem] sm:leading-tight">
+          Postbin
+        </h1>
         <p className="text-description mt-4 text-balance text-lede">
           Create a URL and watch incoming requests in real time.
         </p>
@@ -76,13 +83,14 @@ export default function HomePage() {
             onClick={createBin}
             disabled={loading}
             size="lg"
-            className="w-full"
+            className="min-h-11 w-full"
             aria-busy={loading}
+            aria-describedby={error ? errorId : undefined}
           >
             {loading ? "Creating..." : "Generate"}
           </Button>
           {error ? (
-            <p role="alert" className="text-sm text-destructive">
+            <p id={errorId} role="alert" className="text-sm text-destructive">
               {error}
             </p>
           ) : null}
@@ -95,26 +103,32 @@ export default function HomePage() {
             Built for
           </h2>
         </div>
-        <ul className="grid gap-4 sm:grid-cols-2">
+        <ul className="grid list-none gap-4 p-0 sm:grid-cols-2">
           {useCases.map((useCase) => {
             const Icon = useCase.icon
+            const titleId = `use-case-${useCase.title.toLowerCase().replace(/\s+/g, "-")}`
 
             return (
               <li key={useCase.title}>
-                <Card className="surface-panel h-full">
-                  <CardHeader>
-                    <div className="mb-3 flex items-center justify-between gap-3">
-                      <div className="bg-muted text-foreground flex size-10 items-center justify-center rounded-squircle-md border">
-                        <Icon className="size-5" aria-hidden="true" />
+                <article aria-labelledby={titleId}>
+                  <Card className="surface-panel h-full">
+                    <CardHeader>
+                      <div className="mb-3 flex items-center justify-between gap-3">
+                        <div
+                          className="bg-muted text-foreground flex size-10 shrink-0 items-center justify-center rounded-squircle-md border"
+                          aria-hidden="true"
+                        >
+                          <Icon className="size-5" />
+                        </div>
+                        {"badge" in useCase && useCase.badge ? (
+                          <Badge variant="outline">{useCase.badge}</Badge>
+                        ) : null}
                       </div>
-                      {"badge" in useCase && useCase.badge ? (
-                        <Badge variant="outline">{useCase.badge}</Badge>
-                      ) : null}
-                    </div>
-                    <CardTitle>{useCase.title}</CardTitle>
-                    <CardDescription>{useCase.description}</CardDescription>
-                  </CardHeader>
-                </Card>
+                      <CardTitle id={titleId}>{useCase.title}</CardTitle>
+                      <CardDescription>{useCase.description}</CardDescription>
+                    </CardHeader>
+                  </Card>
+                </article>
               </li>
             )
           })}
