@@ -1,10 +1,41 @@
 "use client"
 
+import { Code2, FormInput, Radio, Webhook } from "lucide-react"
 import { useRouter } from "next/navigation"
 import { useState } from "react"
 
+import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import {
+  Card,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card"
+
+const useCases = [
+  {
+    title: "Webhook testing",
+    description: "Point Stripe, GitHub, or Shopify webhooks at your bin and inspect every payload.",
+    icon: Webhook,
+    badge: "Popular",
+  },
+  {
+    title: "REST API debugging",
+    description: "Capture GET, POST, PUT, PATCH, and DELETE calls with headers, query params, and body.",
+    icon: Code2,
+  },
+  {
+    title: "Form submissions",
+    description: "See exactly what your forms send before you wire up a backend endpoint.",
+    icon: FormInput,
+  },
+  {
+    title: "Live request feed",
+    description: "Watch requests arrive in real time and keep logs for up to 48 hours.",
+    icon: Radio,
+  },
+] as const
 
 export default function HomePage() {
   const router = useRouter()
@@ -33,22 +64,19 @@ export default function HomePage() {
   return (
     <main
       id="main-content"
-      className="mx-auto flex min-h-full w-full max-w-3xl flex-1 flex-col items-center justify-center px-6 py-16"
+      className="mx-auto flex w-full max-w-6xl flex-1 flex-col gap-16 px-6 py-16 md:py-24"
     >
-      <div className="mb-10 text-center">
-        <h1 className="text-heading-xl">Postbin</h1>
-      </div>
-
-      <Card className="surface-panel w-full max-w-lg" aria-labelledby="create-bin-title">
-        <CardHeader>
-          <CardTitle id="create-bin-title">Create a bin</CardTitle>
-        </CardHeader>
-        <CardContent className="space-y-3">
+      <section className="mx-auto flex w-full max-w-xl flex-col items-center text-center">
+        <h1 className="text-heading-xl md:text-[2.5rem] md:leading-tight">Postbin</h1>
+        <p className="text-description mt-4 text-balance text-lede">
+          Create a URL and watch incoming requests in real time.
+        </p>
+        <div className="mt-8 flex w-full max-w-sm flex-col gap-3">
           <Button
             onClick={createBin}
             disabled={loading}
-            className="w-full"
             size="lg"
+            className="w-full"
             aria-busy={loading}
           >
             {loading ? "Creating..." : "Generate"}
@@ -58,8 +86,40 @@ export default function HomePage() {
               {error}
             </p>
           ) : null}
-        </CardContent>
-      </Card>
+        </div>
+      </section>
+
+      <section aria-labelledby="use-cases-heading" className="space-y-6">
+        <div className="text-center">
+          <h2 id="use-cases-heading" className="text-heading-lg">
+            Built for
+          </h2>
+        </div>
+        <ul className="grid gap-4 sm:grid-cols-2">
+          {useCases.map((useCase) => {
+            const Icon = useCase.icon
+
+            return (
+              <li key={useCase.title}>
+                <Card className="surface-panel h-full">
+                  <CardHeader>
+                    <div className="mb-3 flex items-center justify-between gap-3">
+                      <div className="bg-muted text-foreground flex size-10 items-center justify-center rounded-squircle-md border">
+                        <Icon className="size-5" aria-hidden="true" />
+                      </div>
+                      {"badge" in useCase && useCase.badge ? (
+                        <Badge variant="outline">{useCase.badge}</Badge>
+                      ) : null}
+                    </div>
+                    <CardTitle>{useCase.title}</CardTitle>
+                    <CardDescription>{useCase.description}</CardDescription>
+                  </CardHeader>
+                </Card>
+              </li>
+            )
+          })}
+        </ul>
+      </section>
     </main>
   )
 }
