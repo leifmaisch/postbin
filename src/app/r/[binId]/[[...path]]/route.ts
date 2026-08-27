@@ -4,6 +4,7 @@ import { NextRequest, NextResponse } from "next/server"
 import { db } from "@/db"
 import { bins, requests } from "@/db/schema"
 import { createRequestId } from "@/lib/bin-id"
+import { cleanupExpiredRequests } from "@/lib/cleanup"
 import {
   getClientIp,
   headersToRecord,
@@ -29,6 +30,8 @@ async function handleRequest(request: NextRequest, context: RouteContext) {
   const body = await readRequestBody(request)
   const requestPath = path.length > 0 ? `/${path.join("/")}` : "/"
   const contentType = request.headers.get("content-type")
+
+  await cleanupExpiredRequests(binId)
 
   const [logged] = await db
     .insert(requests)
