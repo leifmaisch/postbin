@@ -1,4 +1,5 @@
 import type { Metadata } from "next"
+import Script from "next/script"
 
 import { leguanFontVariables } from "@/lib/fonts"
 
@@ -29,6 +30,11 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
           Skip to main content
         </a>
         {children}
+        <Script
+          defer
+          src="https://cdn.dumbledor.com/script.js"
+          data-project-key="pk_live_8c341b3198f60095099aaaf6818160e76c7c191329b9f1ee"
+        />
       </body>
     </html>
   )
