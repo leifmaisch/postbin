@@ -156,12 +156,16 @@ export default function BinPage({ params }: PageProps<"/bin/[id]">) {
   }, [])
 
   useEffect(() => {
-    fetchRequests()
+    const initialFetchId = window.setTimeout(() => {
+      void fetchRequests()
+    }, 0)
 
     const countdown = window.setInterval(() => {
       setSecondsLeft((prev) => {
         if (prev <= 1) {
-          fetchRequests()
+          window.setTimeout(() => {
+            void fetchRequests()
+          }, 0)
           return POLL_INTERVAL_SEC
         }
 
@@ -169,7 +173,10 @@ export default function BinPage({ params }: PageProps<"/bin/[id]">) {
       })
     }, 1000)
 
-    return () => window.clearInterval(countdown)
+    return () => {
+      window.clearTimeout(initialFetchId)
+      window.clearInterval(countdown)
+    }
   }, [fetchRequests])
 
   useEffect(() => {
